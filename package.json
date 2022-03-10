@@ -3,7 +3,7 @@
     "express": "^4.17.3"
   },
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "yarn ts-node index.ts"
   },
   "name": "classify-guitar",
   "version": "1.0.0",
