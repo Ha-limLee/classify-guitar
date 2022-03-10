@@ -7,6 +7,9 @@
   },
   "name": "classify-guitar",
   "version": "1.0.0",
+  "engines": {
+    "node": "16.x"
+  },
   "main": "index.js",
   "author": "Ha-limLee",
   "license": "MIT",
