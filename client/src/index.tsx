@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {GuitarProvider} from './contexts/GuitarContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <GuitarProvider>
+      <App />
+    </GuitarProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
