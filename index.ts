@@ -7,12 +7,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.static(path.join(__dirname, 'client/build')));  // react build directory
+app.use(express.static(path.join(__dirname, 'tfjs_model')));
 app.use('/uploads' ,express.static(path.join(__dirname, 'uploads')));   // images that client uploaded
 
 const upload = multer({dest: 'uploads/', limits: {fileSize: 5 * 1024 * 1024}});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/client/build/index.html'));
+});
+
+app.get('/get/model', (req, res) => {
+    res.sendFile(path.join(__dirname, 'tfjs_model/model.json'));
 });
 
 app.post('/post/images', upload.array('img'), (req, res) => {

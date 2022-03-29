@@ -5,7 +5,7 @@ type Subset<T> = {
     [K in keyof T]: T[K];
 }
 
-export type GuitarState = {[K in Guitar]: React.ReactNode[]};
+export type GuitarState = {[K in Guitar]: string[]};
 
 export type GuitarAction =
     | {type: 'push'; target: Subset<Guitar>; element: React.ReactNode}
