@@ -1,0 +1,1 @@
+This directory stores source code and datasets used to build tfjs_model.
