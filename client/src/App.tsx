@@ -4,6 +4,7 @@ import ImageUpload from './components/ImageUpload';
 import GuitarColumnContainer from './components/GuitarColumnContainer';
 import GuitarColumn from './components/GuitarColumn';
 import GuitarImg from './components/GuitarImg';
+import Loader from './components/Loader';
 import { useGuitarState, useGuitarDispatch, Guitar } from './contexts/GuitarContext';
 import * as tf from '@tensorflow/tfjs';
 
@@ -87,29 +88,26 @@ export default function App() {
   }
 
   return (
-    <>
-    {model ? 
-    <>
-      <ImageUploadContainer>
-        <ImageUpload onChange={handleChange}/>
-      </ImageUploadContainer>
-
-      <GuitarColumnContainer>
-        <GuitarColumn head={
-          <GuitarImg alt='stratocaster'src='/images/guitar-classes/stratocaster.jpg'/>
-        }>{state.strat.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
-        <GuitarColumn head={
-          <GuitarImg alt='telecaster' src='/images/guitar-classes/telecaster.jpg'/>
-        }>{state.tele.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
-        <GuitarColumn head={
-          <GuitarImg alt='les-paul' src='/images/guitar-classes/lespaul.jpg'/>
-        }>{state.lespaul.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
-        <GuitarColumn head={
-          <GuitarImg alt='SG' src='/images/guitar-classes/sg.jpg'/>
-        }>{state.sg.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
-      </GuitarColumnContainer>
-    </>
-    : 'loading...'}
-    </>
+    <ImageUploadContainer>
+      {model ? 
+        <>
+          <ImageUpload onChange={handleChange}/>
+          <GuitarColumnContainer>
+            <GuitarColumn head={
+              <GuitarImg alt='stratocaster'src='/images/guitar-classes/stratocaster.jpg'/>
+            }>{state.strat.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
+            <GuitarColumn head={
+              <GuitarImg alt='telecaster' src='/images/guitar-classes/telecaster.jpg'/>
+            }>{state.tele.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
+            <GuitarColumn head={
+              <GuitarImg alt='les-paul' src='/images/guitar-classes/lespaul.jpg'/>
+            }>{state.lespaul.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
+            <GuitarColumn head={
+              <GuitarImg alt='SG' src='/images/guitar-classes/sg.jpg'/>
+            }>{state.sg.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
+          </GuitarColumnContainer>
+        </> : <Loader/>
+      }
+    </ImageUploadContainer>
   );
 }
