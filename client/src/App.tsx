@@ -71,7 +71,7 @@ export default function App() {
           <ImageUpload onChange={handleChange}/>
           <GuitarColumnContainer> 
             {Object.keys(Guitar).map(guitarType => 
-              curry(() => GuitarColumn)
+              curry(() => GuitarColumn, 2)
                 ({head: <GuitarImg alt={guitarType} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
                 ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
             )}

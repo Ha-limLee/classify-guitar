@@ -5,21 +5,14 @@
  * 
  * usage:
  * 
- * curry( ( ) => MyComponent )
+ * curry( ( ) => MyComponent, 2 )
  * 
  *   ( { color: 'blue' } )
  * 
  *   ( { onClick: ( ) => console.log( 'loaded' ) } )
  */
-const curry = (Node: Function) => {
+const curry = (Node: Function, propsLen: Number) => {
     const nodeStr = Node().toString();
-    // e.g. function Node({a, b}) {...}
-    // props are interpreted as 'let { a, b }'
-    const open: string = 'let {', close: string = '}';
-    const begin = nodeStr.indexOf(open);
-    const end = nodeStr.indexOf(close);
-    const propsLen = nodeStr.substring(begin + open.length, end)
-                    .split(',').length;
     let store = {};
     return function curried(arg: Object) {
         store = {...store, ...arg};
