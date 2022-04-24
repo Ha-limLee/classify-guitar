@@ -1,7 +1,14 @@
 import React from 'react';
+export const Guitar = {
+    strat: 'strat',
+    tele: 'tele',
+    lespaul: 'lespaul',
+    sg: 'sg'
+} as const;
 
-export type Guitar = 'strat' | 'tele' | 'lespaul' | 'sg';
-type Subset<T> = {
+export type Guitar = typeof Guitar[keyof typeof Guitar];
+
+export type Subset<T> = {
     [K in keyof T]: T[K];
 }
 

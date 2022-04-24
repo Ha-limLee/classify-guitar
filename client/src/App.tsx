@@ -7,11 +7,13 @@ import GuitarImg from './components/GuitarImg';
 import Loader from './components/Loader';
 import { useGuitarState, useGuitarDispatch, Guitar } from './contexts/GuitarContext';
 import * as tf from '@tensorflow/tfjs';
+import curry from './util/curry';
 
 export default function App() {
   const state = useGuitarState();
   const dispatch = useGuitarDispatch();
   const [model, setModel] = React.useState<tf.LayersModel>();
+  
   React.useEffect(() => {
     (async () => {
       const res = await (await fetch('/get/model')).json()
@@ -20,32 +22,7 @@ export default function App() {
       console.log(createdModel.summary());
     })();
   }, []);
-
   
-  function handleFiles(e: React.ChangeEvent<HTMLInputElement>){
-    const imgs = e.target.files;
-    const formData = new FormData();
-    if (imgs) {
-        for (let i = 0; i < imgs.length; i++){
-            formData.append('img', imgs[i]);
-            console.log(i);
-        }
-        
-        console.log(formData.getAll('img'));
-        // todo: send formData to server using fetch api
-        // have to figure out what url fetch api will receive
-        // url will not be the localhost on the heroku
-        fetch('/post/images', {
-            method: 'POST',
-            body: formData
-        }).then((res) => {
-            res.json().then(val => {
-                console.log(val);
-            })
-        });
-    }
-  }
-
   function handleLoad(cb?: Function){
     return (e: ProgressEvent<FileReader>) => {
       const img = new Image();
@@ -92,19 +69,12 @@ export default function App() {
       {model ? 
         <>
           <ImageUpload onChange={handleChange}/>
-          <GuitarColumnContainer>
-            <GuitarColumn head={
-              <GuitarImg alt='stratocaster'src='/images/guitar-classes/stratocaster.jpg'/>
-            }>{state.strat.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
-            <GuitarColumn head={
-              <GuitarImg alt='telecaster' src='/images/guitar-classes/telecaster.jpg'/>
-            }>{state.tele.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
-            <GuitarColumn head={
-              <GuitarImg alt='les-paul' src='/images/guitar-classes/lespaul.jpg'/>
-            }>{state.lespaul.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
-            <GuitarColumn head={
-              <GuitarImg alt='SG' src='/images/guitar-classes/sg.jpg'/>
-            }>{state.sg.map(x => <GuitarImg src={x}/>)}</GuitarColumn>
+          <GuitarColumnContainer> 
+            {Object.keys(Guitar).map(guitarType => 
+              curry(() => GuitarColumn)
+                ({head: <GuitarImg alt={guitarType} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
+                ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
+            )}
           </GuitarColumnContainer>
         </> : <Loader/>
       }
