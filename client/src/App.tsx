@@ -5,9 +5,57 @@ import GuitarColumnContainer from './components/GuitarColumnContainer';
 import GuitarColumn from './components/GuitarColumn';
 import GuitarImg from './components/GuitarImg';
 import Loader from './components/Loader';
-import { useGuitarState, useGuitarDispatch, Guitar } from './contexts/GuitarContext';
+
+import { useGuitarState, useGuitarDispatch, Guitar, GuitarDispatch } from './contexts/GuitarContext';
 import * as tf from '@tensorflow/tfjs';
-import curry from './util/curry';
+import { curryNode, curry, toGenerator } from './util';
+
+const reader = new FileReader();
+
+/**
+ * the reader executes this function when onload event occured;
+ * @param model 
+ * @param dispatch 
+ * @param e 
+ * @returns 
+ */
+function handleLoad (model: tf.LayersModel, dispatch: GuitarDispatch, e: ProgressEvent<FileReader>) {
+  const img = new Image();
+  img.src = e.target?.result as any;
+  if (!img.src)
+    return;
+  img.onload = ev => {
+    const tensor = tf.browser.fromPixels(img)
+                              .resizeBilinear([180, 180])
+                              .mean(2)
+                              .div(255)
+                              .toFloat()
+                              .expandDims(0)
+                              .expandDims(-1);
+    const predicted = model.predict(tensor) as tf.Tensor;
+    predicted.print();
+    
+    const classes = ['lespaul', 'sg', 'strat', 'tele'];
+    const predictedIdx = predicted.as1D().argMax().dataSync()[0];
+    console.log(classes[predictedIdx]);
+    dispatch({type: 'push', target: classes[predictedIdx] as Guitar, element: img.src});
+  };
+}
+
+function _handleChange(files: Generator<File>){
+  const {value, done} = files.next();
+  if (done)
+    return;
+  reader.onloadend = () => _handleChange(files);
+  reader.readAsDataURL(value);
+}
+
+function handleChange(e: React.ChangeEvent<HTMLInputElement>){
+  if (e.target.files) {
+    const files = Array.from(e.target.files);
+    _handleChange(toGenerator(files));
+  }
+}
 
 export default function App() {
   const state = useGuitarState();
@@ -19,50 +67,10 @@ export default function App() {
       const res = await (await fetch('/get/model')).json()
       const createdModel = await tf.models.modelFromJSON(res);
       setModel(createdModel);
+      reader.onload = curry(handleLoad)(createdModel)(dispatch);
       console.log(createdModel.summary());
     })();
   }, []);
-  
-  function handleLoad(cb?: Function){
-    return (e: ProgressEvent<FileReader>) => {
-      const img = new Image();
-      img.src = e?.target?.result as any;
-      if (img.src){
-        img.onload = ev => {
-          const tensor = tf.browser.fromPixels(img)
-                                    .resizeBilinear([180, 180])
-                                    .mean(2)
-                                    .div(255)
-                                    .toFloat()
-                                    .expandDims(0)
-                                    .expandDims(-1);
-          const predicted = model?.predict(tensor) as tf.Tensor;
-          predicted.print();
-          
-          const classes = ['lespaul', 'sg', 'strat', 'tele'];
-          const predictedIdx = predicted.as1D().argMax().dataSync()[0];
-          console.log(classes[predictedIdx]);
-          dispatch({type: 'push', target: classes[predictedIdx] as Guitar, element: img.src})
-          if (cb) cb();
-        };
-      }
-    };
-  }
-
-  const reader = new FileReader();
-  function _handleChange(files: File[]){
-    if (files.length === 0) return;
-
-    reader.onload = reader.onload || handleLoad(() => _handleChange(files));
-    reader.readAsDataURL(files.pop() as Blob);
-  }
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>){
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      _handleChange(files);
-    }
-  }
 
   return (
     <ImageUploadContainer>
@@ -71,7 +79,7 @@ export default function App() {
           <ImageUpload onChange={handleChange}/>
           <GuitarColumnContainer> 
             {Object.keys(Guitar).map(guitarType => 
-              curry(() => GuitarColumn, 2)
+              curryNode(() => GuitarColumn, 2)
                 ({head: <GuitarImg alt={guitarType} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
                 ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
             )}

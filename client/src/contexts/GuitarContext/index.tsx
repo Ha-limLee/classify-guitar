@@ -29,7 +29,7 @@ function reducer(state: GuitarState, action: GuitarAction){
     }
 }
 
-type GuitarDispatch = React.Dispatch<GuitarAction>;
+export type GuitarDispatch = React.Dispatch<GuitarAction>;
 const GuitarStateContext = React.createContext<GuitarState | null>(null);
 const GuitarDispatchContext = React.createContext<GuitarDispatch | null>(null);
 
