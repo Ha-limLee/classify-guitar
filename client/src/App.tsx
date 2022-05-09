@@ -5,6 +5,7 @@ import GuitarColumnContainer from './components/GuitarColumnContainer';
 import GuitarColumn from './components/GuitarColumn';
 import GuitarImg from './components/GuitarImg';
 import Loader from './components/Loader';
+import withTooltip from './components/withTooltip';
 
 import { useGuitarState, useGuitarDispatch, Guitar, GuitarDispatch } from './contexts/GuitarContext';
 import * as tf from '@tensorflow/tfjs';
@@ -74,13 +75,14 @@ export default function App() {
 
   return (
     <ImageUploadContainer>
-          {model ? <ImageUpload onChange={handleChange}/> : <Loader/>}
-          <GuitarColumnContainer> 
-            {Object.keys(Guitar).map(guitarType => 
-              curryNode(() => GuitarColumn, 2)
+          {model ? <ImageUpload onChange={handleChange}/> : withTooltip(Loader)('loading model')}
+          <GuitarColumnContainer>
+            {Object.keys(Guitar).map(guitarType => {
+              const guitarColumnPropsLen = 2;
+              return curryNode(GuitarColumn, guitarColumnPropsLen)
                 ({head: <GuitarImg alt={guitarType} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
                 ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
-            )}
+            })}
           </GuitarColumnContainer>
     </ImageUploadContainer>
   );

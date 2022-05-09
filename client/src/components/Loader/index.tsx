@@ -1,6 +1,9 @@
 import React from 'react';
 import style from './style.module.css';
+import withTooltip from '../withTooltip';
 
-export default function Loader(){
+function Loader(){
     return <div className={style.loader}></div>;
 }
+
+export default withTooltip(Loader)('loading model');
