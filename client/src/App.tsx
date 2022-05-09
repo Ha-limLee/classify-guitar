@@ -64,7 +64,7 @@ export default function App() {
   
   React.useEffect(() => {
     (async () => {
-      const res = await (await fetch('/get/model')).json()
+      const res = await (await fetch('/get/model.json')).json()
       const createdModel = await tf.models.modelFromJSON(res);
       setModel(createdModel);
       reader.onload = curry(handleLoad)(createdModel)(dispatch);
@@ -74,9 +74,7 @@ export default function App() {
 
   return (
     <ImageUploadContainer>
-      {model ? 
-        <>
-          <ImageUpload onChange={handleChange}/>
+          {model ? <ImageUpload onChange={handleChange}/> : <Loader/>}
           <GuitarColumnContainer> 
             {Object.keys(Guitar).map(guitarType => 
               curryNode(() => GuitarColumn, 2)
@@ -84,8 +82,6 @@ export default function App() {
                 ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
             )}
           </GuitarColumnContainer>
-        </> : <Loader/>
-      }
     </ImageUploadContainer>
   );
 }

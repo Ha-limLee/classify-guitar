@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
 
-app.get('/get/model', (req, res) => {
+app.get('/get/model.json', (req, res) => {
     res.sendFile(path.join(__dirname, 'tfjs_model/model.json'));
 });
 
