@@ -3,6 +3,7 @@ import ImageUploadContainer from './components/ImageUploadContainer';
 import ImageUpload from './components/ImageUpload';
 import GuitarColumnContainer from './components/GuitarColumnContainer';
 import GuitarColumn from './components/GuitarColumn';
+import GuitarImgHeader from './components/GuitarImgHeader';
 import GuitarImg from './components/GuitarImg';
 import Loader from './components/Loader';
 import withTooltip from './components/withTooltip';
@@ -14,7 +15,6 @@ import { curryComponent, curry, toGenerator } from './util';
 const reader = new FileReader();
 
 const LoaderWithTooltip = withTooltip(Loader);
-const GuitarImgWithTooltip = withTooltip(GuitarImg);
 
 /**
  * the reader executes this function when onload event occured;
@@ -74,16 +74,15 @@ export default function App() {
       reader.onload = curry(handleLoad)(createdModel)(dispatch);
       console.log(createdModel.summary());
     })();
-  }, []);
+  });
 
   return (
     <ImageUploadContainer>
           {model ? <ImageUpload onChange={handleChange}/> : <LoaderWithTooltip text={'loading model'}/>}
           <GuitarColumnContainer>
             {Object.keys(Guitar).map(guitarType => {
-              const guitarColumnPropsLen = 2;
               return curryComponent(GuitarColumn, {head: '', children: ''})
-                ({head: <GuitarImgWithTooltip text={''} alt={guitarType} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
+                ({head: <GuitarImgHeader guitarType={guitarType as Guitar} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
                 ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
             })}
           </GuitarColumnContainer>
