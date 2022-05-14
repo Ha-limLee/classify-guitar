@@ -2,23 +2,27 @@ import React from "react";
 
 /**
  * Curry react function component
- * @param Node ( ) => FunctionComponent
+ * @param Compo FunctionComponent
+ * @param props Compo's props
  * @returns curried function or React element
  * 
  * usage:
  * 
- * curry( ( ) => MyComponent, 2 )
+ * curryComponent( MyComponent, {color: '', onClick: ''} )
  * 
  *   ( { color: 'blue' } )
  * 
  *   ( { onClick: ( ) => console.log( 'loaded' ) } )
  */
- const curryNode = (Node: React.FunctionComponent, propsLen: Number) => {
+ const curryComponent = <P extends {}>(Compo: React.FunctionComponent<P>, props: {[K in keyof P]: any}) => {
+    const propsLen = Object.keys(props).length;
     let store = {};
     const curried = (arg: Object) => {
+        if (!Object.keys(arg).every(key => key in props))
+            return new Error('Received unexptected args');
         store = {...store, ...arg};
         return Object.keys(store).length >= propsLen ?
-            <Node {...store}/> : (arg2: Object) => curried(arg2);
+            <Compo {...store as P}/> : (arg2: Object) => curried(arg2);
     }
     return curried as CallableFunction;
 }
@@ -35,4 +39,4 @@ function* toGenerator(arr: Array<any>){
         yield x;
 }
 
-export {curryNode, curry, toGenerator};
+export {curryComponent, curry, toGenerator};

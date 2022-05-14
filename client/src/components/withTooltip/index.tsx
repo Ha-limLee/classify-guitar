@@ -1,11 +1,15 @@
 import React from 'react';
 import Tooltip from '../Tooltip';
 
-const withTooltip = (WrappedComponent: React.FunctionComponent) => (text: string) => {
-    const Component = (props: {}) => {
+interface TextProps {
+    text: string;
+}
+
+const withTooltip = <P extends {}>(WrappedComponent: React.ComponentType<P>): React.FC<TextProps & P> => {
+    const Component = ({text, ...props}: TextProps) => {
         return (
             <Tooltip text={text}>
-                <WrappedComponent {...props}/>
+                <WrappedComponent {...(props as P)}/>
             </Tooltip>
         );
     };

@@ -9,9 +9,12 @@ import withTooltip from './components/withTooltip';
 
 import { useGuitarState, useGuitarDispatch, Guitar, GuitarDispatch } from './contexts/GuitarContext';
 import * as tf from '@tensorflow/tfjs';
-import { curryNode, curry, toGenerator } from './util';
+import { curryComponent, curry, toGenerator } from './util';
 
 const reader = new FileReader();
+
+const LoaderWithTooltip = withTooltip(Loader);
+const GuitarImgWithTooltip = withTooltip(GuitarImg);
 
 /**
  * the reader executes this function when onload event occured;
@@ -75,12 +78,12 @@ export default function App() {
 
   return (
     <ImageUploadContainer>
-          {model ? <ImageUpload onChange={handleChange}/> : withTooltip(Loader)('loading model')}
+          {model ? <ImageUpload onChange={handleChange}/> : <LoaderWithTooltip text={'loading model'}/>}
           <GuitarColumnContainer>
             {Object.keys(Guitar).map(guitarType => {
               const guitarColumnPropsLen = 2;
-              return curryNode(GuitarColumn, guitarColumnPropsLen)
-                ({head: <GuitarImg alt={guitarType} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
+              return curryComponent(GuitarColumn, {head: '', children: ''})
+                ({head: <GuitarImgWithTooltip text={''} alt={guitarType} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
                 ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
             })}
           </GuitarColumnContainer>
