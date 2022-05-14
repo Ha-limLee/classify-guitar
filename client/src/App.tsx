@@ -74,7 +74,7 @@ export default function App() {
       reader.onload = curry(handleLoad)(createdModel)(dispatch);
       console.log(createdModel.summary());
     })();
-  });
+  }, []);
 
   return (
     <ImageUploadContainer>
