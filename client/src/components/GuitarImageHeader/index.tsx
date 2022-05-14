@@ -1,12 +1,12 @@
-import GuitarImg from "../GuitarImg";
+import GuitarImage from "../GuitarImage";
 import withTooltip from "../withTooltip";
 import { Guitar } from "../../contexts/GuitarContext";
 import { curryComponent } from "../../util";
 
-const GuitarImgWithTooltip = withTooltip(GuitarImg);
+const GuitarImageWithTooltip = withTooltip(GuitarImage);
 
-export default function GuitarImgHeader({guitarType, src}: {guitarType: Guitar, src: string}){
-    const curried = curryComponent(GuitarImgWithTooltip, {text: '', alt: '', src: ''})
+export default function GuitarImageHeader({guitarType, src}: {guitarType: Guitar, src: string}){
+    const curried = curryComponent(GuitarImageWithTooltip, {text: '', alt: '', src: ''})
                     ({alt: guitarType})({src: src});
     switch (guitarType) {
         case 'strat':

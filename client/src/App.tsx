@@ -3,8 +3,8 @@ import ImageUploadContainer from './components/ImageUploadContainer';
 import ImageUpload from './components/ImageUpload';
 import GuitarColumnContainer from './components/GuitarColumnContainer';
 import GuitarColumn from './components/GuitarColumn';
-import GuitarImgHeader from './components/GuitarImgHeader';
-import GuitarImg from './components/GuitarImg';
+import GuitarImageHeader from './components/GuitarImageHeader';
+import GuitarImage from './components/GuitarImage';
 import Loader from './components/Loader';
 import withTooltip from './components/withTooltip';
 
@@ -82,8 +82,8 @@ export default function App() {
           <GuitarColumnContainer>
             {Object.keys(Guitar).map(guitarType => {
               return curryComponent(GuitarColumn, {head: '', children: ''})
-                ({head: <GuitarImgHeader guitarType={guitarType as Guitar} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
-                ({children: state[guitarType as Guitar].map(x => <GuitarImg src={x}/>)})
+                ({head: <GuitarImageHeader guitarType={guitarType as Guitar} src={`/images/guitar-classes/${guitarType}.jpg`}/>})
+                ({children: state[guitarType as Guitar].map(x => <GuitarImage src={x}/>)})
             })}
           </GuitarColumnContainer>
     </ImageUploadContainer>
